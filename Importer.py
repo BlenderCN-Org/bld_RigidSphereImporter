@@ -8,14 +8,14 @@ bl_info = \
         "name" : "Object Importer",
         "author" : "Dylan Blakemore",
         "version" : (1, 0, 0),
-        "blender" : (2, 7, 6),
+        "blender" : (2),
         "location" : "View 3D > Object Mode > Tool Shelf > Create",
         "description" :
             "Import entities from .csv files in (x,y,z) format",
         "warning" : "",
         "wiki_url" : "",
         "tracker_url" : "",
-        "category" : "Add Mesh",
+        "category" : "Import Positions",
     }
 
 class ImportRigidSpheresPanel(bpy.types.Panel):
@@ -51,15 +51,19 @@ class ImportRigidSpheres(bpy.types.Operator):
             if i == 0:
                 bpy.ops.mesh.primitive_uv_sphere_add(segments=16, 
                                                      ring_count=8, 
-                                                     size=0.3/size_ratio, 
+                                                     size=0.5/size_ratio, 
                                                      location=i_location)
                 sphere = bpy.context.object
                 bpy.ops.rigidbody.object_add(type='ACTIVE')
                 bpy.ops.rigidbody.shape_change(type='SPHERE')
+                sphere.rigid_body.use_margin = True
+                sphere.rigid_body.collision_margin = 0.05
             else:
                 ob = sphere.copy()
-                ob.location = i_location
+                bpy.context.scene.rigidbody_world.group.objects.link(ob)
                 bpy.context.scene.objects.link(ob)
+                ob.location = i_location
+                
             #end if
             i = i + 1
         #end for
@@ -81,8 +85,8 @@ def register():
       )
     
 def unregister():
-    bpy.utils.unregister_class(ImportRigidSpheres)
-    bpy.utils.unregister_class(ImportRigidSpheresPanel)
+    bpy.utils.register_class(ImportRigidSpheres)
+    bpy.utils.register_class(ImportRigidSpheresPanel)
     
 if __name__ == "__main__":
     register()
