@@ -85,8 +85,8 @@ def register():
       )
     
 def unregister():
-    bpy.utils.register_class(ImportRigidSpheres)
-    bpy.utils.register_class(ImportRigidSpheresPanel)
+    bpy.utils.unregister_class(ImportRigidSpheres)
+    bpy.utils.unregister_class(ImportRigidSpheresPanel)
     
 if __name__ == "__main__":
     register()
